@@ -1,10 +1,4 @@
 import { useState, useEffect } from "react";
-
-interface TimeDisplayProps {
-    playing: boolean;
-    reset: boolean; // Thêm prop reset
-}
-
 const TimeDisplay = ({ playing, reset }: TimeDisplayProps) => {
     const [time, setTime] = useState<number>(0);
     const [lastTime, setLastTime] = useState<number | null>(null);

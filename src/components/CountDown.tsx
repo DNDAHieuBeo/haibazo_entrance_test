@@ -5,6 +5,7 @@ const CountDown = ({ start, onEnd, playing }: CountdownProps) => {
     const [stopped, setStopped] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+
     useEffect(() => {
         setTime(start);
         setStopped(false);
@@ -30,7 +31,7 @@ const CountDown = ({ start, onEnd, playing }: CountdownProps) => {
     }, [time, playing, stopped]);
 
     return (
-        <div className="text-xs mt-1">
+        <div className="text-xs mt-1 text-white">
             {time.toFixed(1)}
         </div>
     );
