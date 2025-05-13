@@ -4,13 +4,14 @@ interface CircleProps {
     top: number;
     left: number;
     visible: boolean;
-    onClick: (() => void) | null;
-    showCountdown: boolean;
-    playing: boolean;
+    onClick?: (() => void) | null;
+    showCountdown?: boolean;
+    playing?: boolean;
     highlightRight?: boolean;
     isLose?: boolean;
     fading?: boolean;
-    startFade:boolean
+    startFade?:boolean
+    fadeResetKey?: number;
 }
 interface TimeDisplayProps {
     playing: boolean;

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import type { ChangeEvent } from "react";
+import {useState, useEffect, useRef} from "react";
+import type {ChangeEvent} from "react";
 import "./App.css";
 import TimeDisplay from "./components/TimeDisplay.tsx";
 import Circle from "./Circle";
@@ -13,17 +13,16 @@ const App = () => {
     const [playing, setPlaying] = useState<boolean>(false);
     const [circleCountToDisplay, setCircleCountToDisplay] = useState<number>(0);
     const [circles, setCircles] = useState<CircleProps[]>([]);
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    const [countdownStoppedIndex, setCountdownStoppedIndex] = useState<number | null>(null); // mới thêm
     const [reset, setReset] = useState<boolean>(false);
     const [isCleared, setIsCleared] = useState<boolean>(false);
     const [isLose, setIsLose] = useState<boolean>();
-    const [current, setCurrent] = useState<number>(0);
     const [startFade, setStartFade] = useState(false);
     const [fadeResetKey, setFadeResetKey] = useState<number>(0);
     const [next, setNext] = useState(1);
     const [hasStartedClicking, setHasStartedClicking] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [autoPlay, setAutoPlay] = useState(false);
+    const endTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handlePointChange = (e: ChangeEvent<HTMLInputElement>) => {
         setPoint(e.target.value);
@@ -33,7 +32,7 @@ const App = () => {
         if (!playing) return;
         if (circleCountToDisplay > 0) {
             const newCircles: CircleProps[] = Array.from(
-                { length: circleCountToDisplay },
+                {length: circleCountToDisplay},
                 (_, i) => ({
                     index: i + 1,
                     top: Math.random() * (CONTAINER_HEIGHT - CIRCLE_SIZE),
@@ -72,24 +71,22 @@ const App = () => {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
     }, [next, playing, hasStartedClicking]);
-
+    // handle click on circle function
     const clickCircle = (i: number) => {
         if (!playing) return;
         const circle = circles.find(c => c.index === i);
         if (!circle || !circle.visible) return;
 
         if (i !== next) {
-            setCountdownStoppedIndex(activeIndex); // giữ lại index của countdown cũ
+            // giữ lại index của countdown cũ
 
             return lose();
         }
 
         if (!hasStartedClicking) setHasStartedClicking(true);
 
-        setActiveIndex(i);
-        setCurrent(i);
         setCircles(c => c.map(circle =>
-            circle.index === i ? { ...circle, visible: false } : circle
+            circle.index === i ? {...circle, visible: false} : circle
         ));
         setStartFade(true);
 
@@ -99,27 +96,41 @@ const App = () => {
 
         if (i === Number(point)) {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            setTimeout(() => {
+
+            // Huỷ timeout cũ nếu có
+            if (endTimeoutRef.current) clearTimeout(endTimeoutRef.current);
+
+            endTimeoutRef.current = setTimeout(() => {
                 end();
                 setPlaying(false);
             }, 3000);
         }
-    };
 
+    };
+    //Set auto play mode
+    useEffect(() => {
+        if (!playing || !autoPlay) return;
+        if (next > Number(point)) return; // đã xong
+
+        const autoClickTimeout = setTimeout(() => {
+            clickCircle(next); // tự gọi hàm click như người dùng
+        }, 1000); // delay 1 giây mỗi lần
+
+        return () => clearTimeout(autoClickTimeout);
+    }, [autoPlay, playing, next]);
+    //Trigger when play or restart, reset all state
     const onPlay = (): void => {
+        if (endTimeoutRef.current) clearTimeout(endTimeoutRef.current);
+        setAutoPlay(false)
         setFadeResetKey(Date.now());
         setIsCleared(false);
         setIsLose(false);
         setPlaying(false);
         setCircleCountToDisplay(0);
         setNext(1);
-        setActiveIndex(null);
-        setCountdownStoppedIndex(null); // reset countdown giữ lại
         setReset(true);
-
         setHasStartedClicking(false);
         setStartFade(false);
-
         setTimeout(() => {
             setCircleCountToDisplay(Number(point));
             setPlaying(true);
@@ -148,7 +159,7 @@ const App = () => {
                             onChange={handlePointChange}
                         />
                     </div>
-                    <TimeDisplay playing={playing} reset={reset} />
+                    <TimeDisplay playing={playing} reset={reset}/>
                     <button
                         className="w-fit py-1 px-8 border border-black cursor-pointer text-center"
                         onClick={onPlay}
@@ -156,13 +167,14 @@ const App = () => {
                         {playing ? "Restart" : "Play"}
                     </button>
                     {playing && (
-                        <button className="w-fit py-1 px-8 border ml-5 border-black cursor-pointer text-center">
-                            Auto play On
+                        <button className="w-fit py-1 px-8 border ml-5 border-black cursor-pointer text-center"
+                                onClick={() => setAutoPlay(prev => !prev)}>
+                            Auto Play {autoPlay ? "Off" : "On"}
                         </button>
                     )}
                 </div>
                 <div className="border border-black-50 mt-5 relative p-2"
-                     style={{ width: `${CONTAINER_WIDTH}px`, height: `${CONTAINER_HEIGHT}px` }}
+                     style={{width: `${CONTAINER_WIDTH}px`, height: `${CONTAINER_HEIGHT}px`}}
                 >
                     {circles?.map((circle) => (
                         <Circle

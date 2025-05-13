@@ -5,7 +5,6 @@ const CountDown = ({ start, onEnd, playing }: CountdownProps) => {
     const [stopped, setStopped] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-
     useEffect(() => {
         setTime(start);
         setStopped(false);

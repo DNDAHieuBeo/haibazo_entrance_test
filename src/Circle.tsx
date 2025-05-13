@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import Countdown from "./components/CountDown.tsx";
 
 const Circle = ({
@@ -48,14 +48,14 @@ const Circle = ({
         <div
             onClick={onClick || undefined}
             className={`w-[50px] h-[50px] rounded-full p-2 text-center absolute cursor-pointer  text-sm flex flex-col items-center justify-center
-            ${!visible ? "bg-orange-500 text-black" : "bg-white text-black border-1 border-orange-500 "}
+            ${!visible ? "bg-orange-500 text-black z-50" : "bg-white text-black border-1 border-orange-500 "}
         `}
-            style={{ top: `${top}px`, left: `${left}px`, opacity: `${opacity}` }}
+            style={{top: `${top}px`, left: `${left}px`, opacity: `${opacity}`}}
         >
             {index}
-            {showCountdown && <Countdown start={3} playing={playing} />}
+            {showCountdown && <Countdown start={3} playing={playing}/>}
         </div>
     );
 };
 
-export default Circle;
+export default React.memo(Circle);
