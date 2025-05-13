@@ -24,8 +24,11 @@ const App = () => {
     const [autoPlay, setAutoPlay] = useState(false);
     const endTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const handlePointChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPoint(e.target.value);
+    const handlePointChange = (e: ChangeEvent<HTMLInputElement>) => {const value = e.target.value;
+        // The player can only fill number 0->9
+        if (value === '' || (/^\d+$/.test(value) && Number(value) >= 1)) {
+            setPoint(value);
+        }
     };
 
     useEffect(() => {
@@ -47,13 +50,13 @@ const App = () => {
     }, [playing, circleCountToDisplay]);
 
     const lose = () => {
-        console.log("Lose");
+
         setIsLose(true);
         setPlaying(false);
     };
 
     const end = () => {
-        console.log("Win");
+
         setIsCleared(true);
         setPlaying(false);
     };
@@ -63,7 +66,7 @@ const App = () => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
         timeoutRef.current = setTimeout(() => {
-            console.log("Timeout - user didn't click in time");
+
             lose();
         }, 3000);
 
@@ -110,11 +113,11 @@ const App = () => {
     //Set auto play mode
     useEffect(() => {
         if (!playing || !autoPlay) return;
-        if (next > Number(point)) return; // đã xong
+        if (next > Number(point)) return;
 
         const autoClickTimeout = setTimeout(() => {
-            clickCircle(next); // tự gọi hàm click như người dùng
-        }, 1000); // delay 1 giây mỗi lần
+            clickCircle(next);
+        }, 1000);
 
         return () => clearTimeout(autoClickTimeout);
     }, [autoPlay, playing, next]);
@@ -131,8 +134,10 @@ const App = () => {
         setReset(true);
         setHasStartedClicking(false);
         setStartFade(false);
+        const pointNumber = Number(point);
+        const validatedPoint = isNaN(pointNumber) || pointNumber <= 0 ? 5 : pointNumber;
         setTimeout(() => {
-            setCircleCountToDisplay(Number(point));
+            setCircleCountToDisplay(validatedPoint);
             setPlaying(true);
             setReset(false);
         }, 100);
@@ -155,6 +160,8 @@ const App = () => {
                         <input
                             className="border ml-2 px-2 py-1"
                             type="number"
+                            min={1}
+                            placeholder="5"
                             value={point}
                             onChange={handlePointChange}
                         />
