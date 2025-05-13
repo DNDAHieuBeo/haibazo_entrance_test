@@ -8,6 +8,7 @@ const Circle = ({
                     visible,
                     onClick,
                     showCountdown,
+                    zIndex,
                     playing,
                     startFade,
                     fadeResetKey
@@ -47,10 +48,10 @@ const Circle = ({
     return (
         <div
             onClick={onClick || undefined}
-            className={`w-[50px] h-[50px] rounded-full p-2 text-center absolute cursor-pointer  text-sm flex flex-col items-center justify-center
-            ${!visible ? "bg-orange-500 text-black z-50" : "bg-white text-black border-1 border-orange-500 "}
+            className={`w-[50px] h-[50px] rounded-full p-2 text-center absolute cursor-pointer  text-sm flex flex-col  items-center justify-center
+            ${!visible ? "bg-orange-500 text-black " : "bg-white text-black border-1 border-orange-500 "}
         `}
-            style={{top: `${top}px`, left: `${left}px`, opacity: `${opacity}`}}
+            style={{top: `${top}px`, left: `${left}px`, opacity: `${opacity} ` , zIndex: `${zIndex}`}}
         >
             {index}
             {showCountdown && <Countdown start={3} playing={playing}/>}

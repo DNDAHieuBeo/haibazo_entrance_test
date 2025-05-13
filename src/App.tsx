@@ -24,6 +24,7 @@ const App = () => {
     const [autoPlay, setAutoPlay] = useState(false);
     const endTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+
     const handlePointChange = (e: ChangeEvent<HTMLInputElement>) => {const value = e.target.value;
         // The player can only fill number 0->9
         if (value === '' || (/^\d+$/.test(value) && Number(value) >= 1)) {
@@ -41,6 +42,7 @@ const App = () => {
                     top: Math.random() * (CONTAINER_HEIGHT - CIRCLE_SIZE),
                     left: Math.random() * (CONTAINER_WIDTH - CIRCLE_SIZE),
                     visible: true,
+                    zIndex: circleCountToDisplay - (i + 1)
                 })
             );
             setCircles(newCircles);
@@ -193,7 +195,7 @@ const App = () => {
                             onClick={circle.visible && playing ? () => clickCircle(circle.index) : null}
                             showCountdown={!circle.visible}
                             playing={playing}
-
+                            zIndex={circle.zIndex}
                             isLose={isLose}
                             startFade={startFade}
                             fadeResetKey={fadeResetKey}

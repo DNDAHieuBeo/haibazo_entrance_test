@@ -12,6 +12,7 @@ interface CircleProps {
     fading?: boolean;
     startFade?:boolean
     fadeResetKey?: number;
+    zIndex:number;
 }
 interface TimeDisplayProps {
     playing: boolean;
