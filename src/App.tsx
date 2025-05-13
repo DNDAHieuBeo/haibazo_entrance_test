@@ -42,7 +42,8 @@ const App = () => {
                     top: Math.random() * (CONTAINER_HEIGHT - CIRCLE_SIZE),
                     left: Math.random() * (CONTAINER_WIDTH - CIRCLE_SIZE),
                     visible: true,
-                    zIndex: circleCountToDisplay - (i + 1)
+                    zIndex: circleCountToDisplay - (i + 1),
+                    isWrong: false
                 })
             );
             setCircles(newCircles);
@@ -68,9 +69,8 @@ const App = () => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
         timeoutRef.current = setTimeout(() => {
-
             lose();
-        }, 3000);
+        }, 3100);
 
         return () => {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -83,7 +83,9 @@ const App = () => {
         if (!circle || !circle.visible) return;
 
         if (i !== next) {
-            // giữ lại index của countdown cũ
+            setCircles(c => c.map(circle =>
+                circle.index === i ? {...circle, isWrong: true} : circle
+            ));
 
             return lose();
         }
@@ -192,8 +194,9 @@ const App = () => {
                             top={circle.top}
                             left={circle.left}
                             visible={circle.visible}
+                            isWrong={circle.isWrong}
                             onClick={circle.visible && playing ? () => clickCircle(circle.index) : null}
-                            showCountdown={!circle.visible}
+                            showCountdown={!circle.visible || circle.isWrong}
                             playing={playing}
                             zIndex={circle.zIndex}
                             isLose={isLose}

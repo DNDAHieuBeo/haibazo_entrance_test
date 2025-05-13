@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const CountDown = ({ start, onEnd, playing }: CountdownProps) => {
+const CountDown = ({ start, onEnd, playing,isWrong }: CountdownProps) => {
     const [time, setTime] = useState(start);
     const [stopped, setStopped] = useState(false);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -12,7 +12,7 @@ const CountDown = ({ start, onEnd, playing }: CountdownProps) => {
     }, [start]);
 
     useEffect(() => {
-        if (stopped || time <= 0 || !playing) {
+        if (stopped || time <= 0 || !playing || isWrong) {
             if (!playing && !stopped) {
                 setStopped(true); // chỉ setStopped lần đầu khi bị dừng
             }

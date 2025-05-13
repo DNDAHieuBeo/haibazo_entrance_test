@@ -11,21 +11,22 @@ const Circle = ({
                     zIndex,
                     playing,
                     startFade,
-                    fadeResetKey
+                    fadeResetKey,
+                    isWrong,
                 }: CircleProps) => {
     const [opacity, setOpacity] = useState(1);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Reset lại opacity và clear timeout khi chơi lại
+
     useEffect(() => {
         setOpacity(1);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
     }, [fadeResetKey]);
 
-    // Bắt đầu quá trình fade khi: visible = false, startFade = true, playing = true
+
     useEffect(() => {
-        // Không cần fade nếu chưa bắt đầu hoặc đang hiển thị
-        if (!startFade || visible || !playing || opacity <= 0) {
+
+        if (!startFade || visible || !playing || opacity <= 0 || isWrong) {
             return;
         }
 
@@ -38,7 +39,7 @@ const Circle = ({
         };
     }, [opacity, startFade, visible, playing]);
 
-    // Dọn dẹp timeout nếu dừng chơi
+
     useEffect(() => {
         if (!playing && timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -49,9 +50,9 @@ const Circle = ({
         <div
             onClick={onClick || undefined}
             className={`w-[50px] h-[50px] rounded-full p-2 text-center absolute cursor-pointer  text-sm flex flex-col  items-center justify-center
-            ${!visible ? "bg-orange-500 text-black " : "bg-white text-black border-1 border-orange-500 "}
+            ${!visible || isWrong ? "bg-orange-500 text-black " : "bg-white text-black border-1 border-orange-500 "}
         `}
-            style={{top: `${top}px`, left: `${left}px`, opacity: `${opacity} ` , zIndex: `${zIndex}`}}
+            style={{top: `${top}px`, left: `${left}px`, opacity: `${opacity}`, zIndex: `${zIndex}`}}
         >
             {index}
             {showCountdown && <Countdown start={3} playing={playing}/>}

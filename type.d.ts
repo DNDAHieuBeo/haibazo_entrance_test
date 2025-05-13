@@ -13,6 +13,7 @@ interface CircleProps {
     startFade?:boolean
     fadeResetKey?: number;
     zIndex:number;
+    isWrong:boolean
 }
 interface TimeDisplayProps {
     playing: boolean;
@@ -23,4 +24,5 @@ interface CountdownProps {
     onEnd?: () => void;
     playing?: boolean;
     isLose?: boolean;
+    isWrong?:boolean
 }
